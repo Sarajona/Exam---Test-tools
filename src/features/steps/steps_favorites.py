@@ -1,6 +1,24 @@
 from behave import given, when, then
 from playwright.sync_api import expect
 
+@when(u'user hovers over a book')
+def when_hover_heart_button(context):
+    # get first book in catalog and hover over it
+    book = context.catalog_page.get_books().first
+    book.hover()
+    #Get title of the book and strip away heart, whitespace and citation marks
+    book_title = book.inner_text()
+    book_title = book_title.strip('❤️').split(',')[0].strip().strip('"')
+    #Save book to context so it can be used in then-step
+    context.hovered_book = book_title
+
+@then(u'heart button for that book becomes visible')
+def then_heart_button_visible(context):
+    #get heart_button using saved book title in context
+    heart_button = context.catalog_page.get_heart_button(context.hovered_book)
+    #Verify heart button is visible
+    expect(heart_button).to_be_visible()
+
 @given(u'{book} is not favorite')
 def given_is_not_favorite(context, book):
     #Verify that book is NOT favorite

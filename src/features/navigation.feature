@@ -1,5 +1,8 @@
 Feature: Handle navigation and interaction
 
+  #[US7] As a user,
+  # I want to navigate between the different tabs on the website,
+  # so that I can access all features easily
   Scenario Outline: Navigate between tabs
     Given user is on <start_page> page
     When user navigates to <go_to_page> page
@@ -16,8 +19,3 @@ Feature: Handle navigation and interaction
       | Katalog       | Katalog       |
       | Mina böcker   | Mina böcker   |
       | Lägg till bok | Lägg till bok |
-
-  Scenario: Heart button becomes visible on hover
-    Given user is on the "Katalog" page
-    When user hovers over a book
-    Then heart button for that book becomes visible
