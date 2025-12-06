@@ -5,11 +5,19 @@ class AddBookPage(BasePage):
     def __init__(self, page: Page, base_url: str):
         super().__init__(page, base_url)
 
+    def get_add_book_tab_button(self):
+        #Return the button for navigating to "Lägg till bok" tab
+        return self.page.get_by_test_id("add-book")
+
     def go_to_page(self):
-        # navigate to base url first
-        self.go_to()
-        # Find button for "Lägg till bok" tab and click
-        self.page.get_by_test_id("add-book").click()
+        # Find button for "Lägg till bok" tab
+        tab_button = self.get_add_book_tab_button()
+        # click if button is enabled
+        if not tab_button.is_disabled():
+            tab_button.click()
+
+    def get_form_container(self):
+        return self.page.locator('.form')
 
     def get_title_field(self):
         #Return title field

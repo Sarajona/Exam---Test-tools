@@ -1,6 +1,7 @@
 from playwright.sync_api import sync_playwright
 from pages.catalog_page import CatalogPage
 from pages.add_book_page import AddBookPage
+from pages.my_books_page import MyBooksPage
 
 def before_all(context):
     #Start Playwright and browser
@@ -20,6 +21,7 @@ def before_scenario(context, scenario):
     # Initialize page objects
     context.catalog_page = CatalogPage(context.page, context.base_url)
     context.add_book_page = AddBookPage(context.page, context.base_url)
+    context.my_books_page = MyBooksPage(context.page, context.base_url)
 
     # Timeout 5 seconds
     #context.page.set_default_timeout(5000)

@@ -1,33 +1,25 @@
-# language: sv
+Feature: Handle favorites
 
-# US4] Som en användare,
-# vill jag kunna favoritmarkera böcker i katalogen
-# så att jag kommer ihåg vilka jag läst och tyckt om
+  Background: user is on "Katalog" page
 
-# [US5] Som en användare,
-# vill jag kunna se en lista över mina favoritböcker
-# så att jag får en samlad överblick av dem
+  Scenario: Add favorite
+    Given Min katt är min chef is not favorite
+    When user adds Min katt är min chef as favorite
+    Then Min katt är min chef is favorite
 
-# [US6] Som en användare,
-# vill jag kunna avmarkera favoritböcker
-# så att jag kan ta bort böcker ur min favoritlista
+Scenario Outline: Display favorites in list
+    Given the following books are marked as favorites: <favorites>
+    When user navigates to "Mina böcker" page
+    Then favorites list should display: <result>
 
-Feature: Hantering av favoritböcker
+Examples:
+    | favorites                                       | result                                          |
+    | Min katt är min chef, Jag trodde det var tisdag | Min katt är min chef, Jag trodde det var tisdag |
+    | Kaffekokaren som visste för mycket              | Kaffekokaren som visste för mycket              |
+    | <empty>                                         | Empty list, info text                           |
 
-  Background: att jag befinner på mig "Katalog"-fliken
-
-  Scenario: Favoritmarkera en bok
-    Given att en bok inte är favoritmarkerad
-    When jag klickar på hjärtikonen
-    Then ska boken markeras som favorit
-
-  Scenario: Visa lista över favoritböcker
-    Given att jag har minst en favoritmarkerad bok
-    When jag navigerar till sidan "Mina böcker"
-    Then ska jag se en lista med mina favoritmarkerade böcker
-
-  Scenario: Avmarkera en favoritbok
-    Given att en bok redan är favoritmarkerad
-    When jag klickar på hjärtikonen igen
-    Then ska boken inte längre vara favorit
-    And den ska inte längre visas på sidan "Favoriter"
+  Scenario: Remove favorite
+    Given Min katt är min chef is favorite
+    When user removes Min katt är min chef from favorites
+    Then Min katt är min chef is not favorite
+    And Min katt är min chef does not exist in list of favorites on the "Mina böcker" page

@@ -8,10 +8,9 @@ Feature: Handle books in the catalog
 
   Scenario: Add book to the catalog
     Given user is on the "Lägg till bok" page
-    When user enters "Project Hail Mary" and "Andy Weir"
-    And clicks on the "Lägg till bok" button
+    When user adds Project Hail Mary and Andy Weir
     Then the fields should be cleared
-    And "Project Hail Mary" by "Andy Weir" should be added to catalog
+    And Project Hail Mary by Andy Weir should be added to catalog
 
   Scenario Outline: Enable the "Lägg till bok" button
     Given user is on the "Lägg till bok" page
