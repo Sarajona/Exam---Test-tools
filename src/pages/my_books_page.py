@@ -19,19 +19,19 @@ class MyBooksPage(BasePage):
     def get_favorites_container(self):
         return self.page.locator('.favorites')
 
-    def get_favorites_list_locator(self):
+    def get_favorites_list(self):
         #Return locator for all li.book in the list of favorites
         favorites_ol = self.page.get_by_role("list")
         return favorites_ol.locator("li.book")
 
     def get_favorites_list_text(self):
         #Returns list with titles of all favorites as text
-        items = self.get_favorites_list_locator()
+        items = self.get_favorites_list()
         return items.all_text_contents()
 
-    def get_favorite(self, title: str):
+    def get_specific_favorite(self, title: str):
         #Find all favorites and filter for title
-        all_favorites = self.get_favorites_list_locator()  # Locator
+        all_favorites = self.get_favorites_list()
         favorite_item = all_favorites.filter(has_text=title)  # filtrera på text
         #return item if found, otherwise return none
         if favorite_item.count() > 0:

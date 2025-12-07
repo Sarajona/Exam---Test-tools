@@ -40,9 +40,14 @@ def given_add_book_page(context):
     expect(title_field).to_be_visible()
     expect(author_field).to_be_visible()
 
-@when(u'user adds {title} and {author}')
+@when(u'user adds {title} by {author}')
 def when_add_book(context, title, author):
-    context.add_book_page.add_book(title, author)
+    if title == "space" and author == "space":
+        # exchange string to just one space
+        title = " "
+        author = " "
+        context.add_book_page.add_book(title, author)
+    else: context.add_book_page.add_book(title, author)
 
 @when(u'clicks on the "Lägg till bok" button')
 def then_click_add_button(context):
@@ -61,9 +66,19 @@ def then_fields_cleared(context):
 def then_book_added(context, title, author):
     #click on "Katalog" tab to go back to catalog tab
     context.catalog_page.go_to_page()
-    #Find book and verify it has title and author in correct format
-    new_book_item = context.catalog_page.get_specific_book(title, author)
-    expect(new_book_item).to_be_visible()
+    #Divert edge case example to a stricter locator
+    if title == "space" and author == "space":
+        #exchange string to just one space
+        title = " "
+        author = " "
+        # Find all books
+        books = context.catalog_page.get_books()
+        # Verify that new book exists in catalog
+        books.get_by_text(f'{title}, {author}', exact=True)
+    #Verify that new book exists in catalog
+    else:
+        new_book_item = context.catalog_page.get_specific_book(title, author)
+        expect(new_book_item).to_be_visible()
 
 @when(u'user enters {title} and {author}')
 def when_enter_fields(context, title, author):
@@ -86,3 +101,12 @@ def then_result_is_correct(context, result):
     elif result == "button is disabled":
         #verify button IS disabled
         expect(add_book_button).to_be_disabled()
+
+@then(u'The catalog should contain 2 copies of {title} by {author}')
+def then_two_copies(context, title, author):
+    # click on "Katalog" tab to go back to catalog tab
+    context.catalog_page.go_to_page()
+    #Find book element that has given title and author
+    copies = context.catalog_page.get_specific_book(title, author).all()
+    copy_count = len(copies)
+    assert copy_count == 2

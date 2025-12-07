@@ -24,29 +24,38 @@ class CatalogPage(BasePage):
 
     def get_specific_book(self, title: str, author: str):
         #Return book item that contains title and author in any format
-        book_list = self.get_books()
-        return book_list.filter(has_text=title).filter(has_text=author)
+        books = self.get_books()
+        return books.filter(has_text=title).filter(has_text=author)
 
-    def get_heart_button(self, book: str):
+    def get_title(self, book):
+        raw_title = book.inner_text().split(",")[0]
+        return raw_title.strip().strip('❤️"')
+
+    def get_author(self):
+        book = self.get_books().first
+        return book.inner_text().strip(' ❤️"').split(",")[1]
+
+    def get_heart_button(self, title: str):
         # Return heart button
-        test_id = f"star-{book}"
+        test_id = f"star-{title}"
+        print(f"Looking for heart button with test-id: {test_id}")
         return self.page.get_by_test_id(test_id)
 
-    def click_heart_button(self, book):
+    def click_heart_button(self, title: str):
         #Click on heart button
-        self.get_heart_button(book).click()
+        self.get_heart_button(title).click()
 
-    def make_favorite(self, book: str):
-        if not self.is_favorite(book):
-            self.click_heart_button(book)
+    def make_favorite(self, title: str):
+        if not self.is_favorite(title):
+            self.click_heart_button(title)
 
-    def remove_favorite(self, book: str):
-        if self.is_favorite(book):
-            self.click_heart_button(book)
+    def remove_favorite(self, title: str):
+        if self.is_favorite(title):
+            self.click_heart_button(title)
 
-    def is_favorite(self, book: str):
+    def is_favorite(self, title: str):
         #Get heart button
-        heart_button = self.get_heart_button(book)
+        heart_button = self.get_heart_button(title)
         # Check if it has a 'selected' class
         classes = heart_button.get_attribute("class")
         return "selected" in classes
